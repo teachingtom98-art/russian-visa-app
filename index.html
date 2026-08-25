@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Russian Visa Application — Document Checklist & Packaging Portal</title>
+  <meta name="description" content="Independent visa preparation assistant, document upload manager, and standardized .ZIP package exporter for Russian tourist, business, work, student, private, and e-visas.">
+  
+  <!-- Modern Accessible Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- JSZip Library for Client-Side Document Packaging -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Top Navigation & Brand Header -->
+  <header class="app-header" role="banner">
+    <div class="header-inner container">
+      
+      <!-- Brand Logo -->
+      <div class="brand-container">
+        <a href="#" class="brand-link" aria-label="Russian Visa Application Portal">
+          <div class="brand-icon" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
+              <path d="M6 6h10"/>
+              <path d="M6 10h10"/>
+              <path d="M6 14h6"/>
+            </svg>
+            <span class="flag-stripe"></span>
+          </div>
+          <div class="brand-titles">
+            <span class="brand-name">Russian Visa Portal</span>
+            <span class="brand-tagline">Application Guide & Document Manager</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Header Controls: Tour Button, Save Button & Dark/Light Toggle -->
+      <div class="header-controls">
+        
+        <!-- Interactive Walkthrough / Tutorial Button -->
+        <button type="button" class="btn btn-sm btn-tour-header" id="startTourBtn" title="Take a 30-second interactive tour of features">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+          </svg>
+          <span>Quick Tour</span>
+        </button>
+
+        <button type="button" class="btn btn-sm btn-secondary header-save-btn" id="headerSaveBtn" title="Save your current progress">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+            <polyline points="17 21 17 13 7 13 7 21"/>
+            <polyline points="7 3 7 8 15 8"/>
+          </svg>
+          <span>Save Progress</span>
+        </button>
+
+        <div class="save-status-pill" id="syncStatus">
+          <span class="status-indicator-dot"></span>
+          <span class="status-text" id="syncLabel">Ready</span>
+        </div>
+
+        <button type="button" class="theme-toggle-btn" id="themeToggleBtn" aria-label="Toggle Light / Dark theme" title="Switch between Light and Dark mode">
+          <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>
+          </svg>
+          <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+          </svg>
+          <span class="theme-label" id="themeLabelText">Dark Mode</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Service Sub-header / Service Status Banner -->
+  <div class="service-banner">
+    <div class="container banner-inner">
+      <span class="badge-accent">DOCUMENT BUNDLER</span>
+      <span class="banner-text">
+        Upload your passport photos, scans & invitations &bull; Export a clean, standardized folder package ready for submission.
+      </span>
+      <button type="button" class="banner-tour-link" id="bannerTourBtn">&bull; How to use this page &rarr;</button>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <div class="container main-wrapper">
+
+    <!-- Breadcrumb Navigation -->
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <ol class="breadcrumbs-list">
+        <li class="breadcrumbs-item"><a class="breadcrumb-link" href="#">Home</a></li>
+        <li class="breadcrumbs-item"><a class="breadcrumb-link" href="#">Visas & Immigration</a></li>
+        <li class="breadcrumbs-item active" aria-current="page">Apply for a Russian Visa</li>
+      </ol>
+    </nav>
+
+    <!-- Save Notification Alert (Dynamic) -->
+    <div class="notification-alert alert-success" id="successBanner" style="display: none;" role="alert">
+      <div class="alert-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
+      <div class="alert-content">
+        <h3 class="alert-title" id="bannerHeading">Progress Saved Successfully</h3>
+        <p class="alert-desc" id="bannerMessage">Your answers and document checklist have been saved securely to your browser storage.</p>
+      </div>
+      <button type="button" class="alert-close-btn" id="closeBannerBtn" aria-label="Dismiss alert">&times;</button>
+    </div>
+
+    <!-- Main Content Layout (2/3 Main Column + 1/3 Sidebar) -->
+    <div class="layout-grid">
+      
+      <!-- Primary Column -->
+      <main class="primary-column" id="main-content" role="main">
+        
+        <!-- Hero Section -->
+        <section class="hero-section">
+          <h1 class="page-title">Apply for a Russian Visa: Step by Step</h1>
+          <p class="lead-text">
+            Choose your visa category below to <strong>immediately open, manage, and bundle</strong> your documents into an organized folder.
+          </p>
+
+          <!-- Primary Action Bar (Right at the Top) -->
+          <div class="top-action-bar" id="topActionBar">
+            <button type="button" class="btn btn-primary" id="startAppBtn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
+              <span>Start New Application</span>
+            </button>
+
+            <button type="button" class="btn btn-success" id="quickZipBtn" title="Export all uploaded files into an organized .ZIP folder">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              <span>Export Document Package (.ZIP)</span>
+            </button>
+
+            <button type="button" class="btn btn-secondary" id="saveProgressBtn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                <polyline points="17 21 17 13 7 13 7 21"/>
+                <polyline points="7 3 7 8 15 8"/>
+              </svg>
+              <span>Save Progress</span>
+            </button>
+
+            <button type="button" class="btn btn-outline" id="loadProgressBtn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              <span>Restore Backup</span>
+            </button>
+          </div>
+
+          <!-- Inset Notice Box -->
+          <div class="callout-box">
+            <p><strong>Notice:</strong> Visas must be obtained before travel. Visas are not issued on arrival at Russian border checkpoints (except for eligible E-Visas applied for in advance online).</p>
+          </div>
+        </section>
+
+        <!-- Section: Select Visa Type Grid (Interactive Cards with Immediate Action) -->
+        <section class="section-block" id="categorySection">
+          <div class="section-title-wrap">
+            <h2 class="section-title">1. Select Visa Category</h2>
+            <p class="section-subtitle">Click on any card below to immediately load and display its required document checklist:</p>
+          </div>
+
+          <div class="visa-cards-grid" id="visaCardsGrid">
+            
+            <!-- Tourist Visa -->
+            <div class="visa-interactive-card active" data-visa="tourist" id="card-tourist" tabindex="0" role="button" aria-pressed="true">
+              <div class="card-icon-header">
+                <div class="card-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="2" y1="12" x2="22" y2="12"/>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                  </svg>
+                </div>
+                <span class="card-badge">Up to 90 / 180 Days</span>
+              </div>
+              <h3 class="card-title">Tourist Visa</h3>
+              <p class="card-description">Sightseeing, leisure travel, cultural tours, and hotel bookings.</p>
+              <div class="card-footer-action">
+                <span class="action-text">Active Checklist</span>
+                <span class="active-indicator-dot"></span>
+              </div>
+            </div>
+
+            <!-- Business Visa -->
+            <div class="visa-interactive-card" data-visa="business" id="card-business" tabindex="0" role="button" aria-pressed="false">
+              <div class="card-icon-header">
+                <div class="card-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="20" height="14" x="2" y="7" rx="2" ry="2"/>
+                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+                  </svg>
+                </div>
+                <span class="card-badge">30 Days – 1 Year</span>
+              </div>
+              <h3 class="card-title">Business Visa</h3>
+              <p class="card-description">Meetings, commercial negotiations, and conferences (MIA invite).</p>
+              <div class="card-footer-action">
+                <span class="action-text">Select & View &rarr;</span>
+              </div>
+            </div>
+
+            <!-- Work Visa -->
+            <div class="visa-interactive-card" data-visa="work" id="card-work" tabindex="0" role="button" aria-pressed="false">
+              <div class="card-icon-header">
+                <div class="card-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+                  </svg>
+                </div>
+                <span class="card-badge">1 to 3 Years</span>
+              </div>
+              <h3 class="card-title">Work Visa</h3>
+              <p class="card-description">Employment contracts and Highly Qualified Specialist (HQS) status.</p>
+              <div class="card-footer-action">
+                <span class="action-text">Select & View &rarr;</span>
+              </div>
+            </div>
+
+            <!-- Student Visa -->
+            <div class="visa-interactive-card" data-visa="student" id="card-student" tabindex="0" role="button" aria-pressed="false">
+              <div class="card-icon-header">
+                <div class="card-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                    <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+                  </svg>
+                </div>
+                <span class="card-badge">Course Duration</span>
+              </div>
+              <h3 class="card-title">Student / Study Visa</h3>
+              <p class="card-description">University degree courses, language study, or academic research.</p>
+              <div class="card-footer-action">
+                <span class="action-text">Select & View &rarr;</span>
+              </div>
+            </div>
+
+            <!-- Private / Family Guest Visa -->
+            <div class="visa-interactive-card" data-visa="private" id="card-private" tabindex="0" role="button" aria-pressed="false">
+              <div class="card-icon-header">
+                <div class="card-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                    <polyline points="9 22 9 12 15 12 15 22"/>
+                  </svg>
+                </div>
+                <span class="card-badge">Up to 1 Year</span>
+              </div>
+              <h3 class="card-title">Private / Family Visa</h3>
+              <p class="card-description">Visiting Russian citizen family members (spouse, child, parent).</p>
+              <div class="card-footer-action">
+                <span class="action-text">Select & View &rarr;</span>
+              </div>
+            </div>
+
+            <!-- Unified E-Visa -->
+            <div class="visa-interactive-card" data-visa="evisa" id="card-evisa" tabindex="0" role="button" aria-pressed="false">
+              <div class="card-icon-header">
+                <div class="card-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                  </svg>
+                </div>
+                <span class="card-badge">16 Days (Single)</span>
+              </div>
+              <h3 class="card-title">Unified E-Visa</h3>
+              <p class="card-description">100% online electronic application for 55 eligible nationalities.</p>
+              <div class="card-footer-action">
+                <span class="action-text">Select & View &rarr;</span>
+              </div>
+            </div>
+
+            <!-- Transit Visa -->
+            <div class="visa-interactive-card" data-visa="transit" id="card-transit" tabindex="0" role="button" aria-pressed="false">
+              <div class="card-icon-header">
+                <div class="card-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/>
+                  </svg>
+                </div>
+                <span class="card-badge">3 Days (Air) / 10 (Rail)</span>
+              </div>
+              <h3 class="card-title">Transit Visa</h3>
+              <p class="card-description">Passing through Russian territory with confirmed onward tickets.</p>
+              <div class="card-footer-action">
+                <span class="action-text">Select & View &rarr;</span>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- Section: Active Checklist & Document Preparation -->
+        <section class="section-block checklist-card-section" id="checklistContainer">
+          
+          <div class="checklist-top-bar">
+            <div>
+              <span class="category-pill" id="activeCategoryCaption">Tourist Visa Checklist</span>
+              <h2 class="checklist-main-heading" id="checklistHeading">Required Documents & Next Steps</h2>
+              
+              <!-- Applicant Profile Meta Bar -->
+              <div class="applicant-meta-bar" id="applicantMetaBar">
+                <div class="meta-field">
+                  <label for="applicantNameInput" class="meta-label">Applicant Name:</label>
+                  <input type="text" id="applicantNameInput" class="meta-input" value="Applicant Name" placeholder="e.g. John Smith" title="Used to name exported document files">
+                </div>
+                <div class="meta-field">
+                  <span class="meta-label">Nationality:</span>
+                  <span class="meta-val" id="applicantNatDisplay">British Citizen</span>
+                </div>
+                <div class="meta-field">
+                  <span class="meta-label">Entries:</span>
+                  <span class="meta-val" id="applicantEntriesDisplay">Single Entry</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="checklist-header-actions">
+              <div class="checklist-progress-badge">
+                <span class="progress-number"><strong id="completedCount">1</strong> / <span id="totalCount">6</span></span>
+                <span class="progress-subtext">Completed</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Document Upload & Packaging Banner -->
+          <div class="package-banner-box" id="packageBannerBox">
+            <div class="package-banner-text">
+              <span class="package-badge">DOCUMENT BUNDLER</span>
+              <strong>Attach your photos, PDFs & scans below.</strong>
+              <span>When ready, export everything into a standardized folder.</span>
+            </div>
+            <button type="button" class="btn btn-success btn-sm" id="exportZipBtn">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              <span>Export Document Package (.ZIP)</span>
+            </button>
+          </div>
+
+          <!-- Passport Rule Warning Box -->
+          <div class="warning-callout">
+            <div class="warning-icon-box">!</div>
+            <div class="warning-text-box">
+              <strong>Passport Requirement:</strong> Passports must be in pristine physical condition with at least 2 adjacent blank visa pages and valid for at least 6 months after your requested visa expiry date.
+            </div>
+          </div>
+
+          <!-- Interactive Task List with Document Upload Zones -->
+          <ol class="task-list" id="gdsTaskList">
+            <!-- Dynamically populated via JS with File Uploaders -->
+          </ol>
+
+          <!-- Checklist Action Bar -->
+          <div class="checklist-footer-actions">
+            <div class="footer-btn-group">
+              <button type="button" class="btn btn-success" id="bottomZipBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                <span>Export Package (.ZIP)</span>
+              </button>
+              
+              <button type="button" class="btn btn-secondary" id="saveFolderDirectBtn" title="Save folder directly to your Documents folder on supported browsers">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                </svg>
+                <span>Save Directly to PC Folder</span>
+              </button>
+
+              <button type="button" class="btn btn-secondary" id="exportJsonBtn">
+                <span>Export State (.JSON)</span>
+              </button>
+            </div>
+
+            <button type="button" class="btn btn-outline btn-sm" id="markAllDoneBtn">
+              <span>Mark All Completed</span>
+            </button>
+          </div>
+
+        </section>
+
+        <!-- General Visa Guidance Accordion -->
+        <section class="section-block guidance-section">
+          <h2 class="section-title" style="font-size: 1.25rem;">Before You Submit</h2>
+          
+          <details class="accordion-item">
+            <summary class="accordion-header">
+              <span>What physical documents do you need to bring to the appointment?</span>
+            </summary>
+            <div class="accordion-body">
+              <p>When attending your appointment at the Russian Visa Application Centre (e.g. Russia Visa Centre / VFS Global) or Russian Consular Section, bring:</p>
+              <ul class="bullet-list">
+                <li>Your original signed passport (valid 6+ months past visa expiry)</li>
+                <li>One printed, dated, and signed Electronic Visa Application (EVA) form from <a href="https://visa.kdmid.ru" target="_blank" rel="noopener noreferrer" class="link-primary">visa.kdmid.ru</a></li>
+                <li>One standard passport photo (35mm &times; 45mm) glued to the designated box on the EVA form</li>
+                <li>Original Tourist Voucher / Confirmation or Official Invitation (MIA/MID)</li>
+                <li>Travel medical insurance certificate (minimum &euro;30,000 cover for the Russian Federation)</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="accordion-item">
+            <summary class="accordion-header">
+              <span>Processing times, consular fees, and expedited rush service</span>
+            </summary>
+            <div class="accordion-body">
+              <p>Standard processing typically takes <strong>4 to 20 working days</strong> depending on your nationality and consular workload.</p>
+              <p>Express expedited processing (1 to 3 working days) is available for selected visa categories upon payment of an expedited consular surcharge.</p>
+            </div>
+          </details>
+        </section>
+
+      </main>
+
+      <!-- Sidebar: Verified Related Content & Quick Tools -->
+      <aside class="sidebar-column" role="complementary">
+        
+        <!-- Document Package Explainer Box -->
+        <div class="sidebar-box package-summary-box" id="sidebarPackageBox">
+          <h2 class="sidebar-heading">Document Package Output</h2>
+          <p class="sidebar-desc">When you click <strong>Export Document Package</strong>, your files are bundled into a standardized folder:</p>
+          <div class="folder-structure-tree">
+            <div class="tree-item folder">📁 Russian_Visa_Package/</div>
+            <div class="tree-item file">📄 00_Checklist_Summary.html</div>
+            <div class="tree-item file">🖼️ 01_Passport_Data_Page.jpg</div>
+            <div class="tree-item file">🖼️ 02_Passport_Photo_35x45.jpg</div>
+            <div class="tree-item file">📄 03_Visa_Application_EVA.pdf</div>
+            <div class="tree-item file">📄 04_Tourist_Voucher.pdf</div>
+            <div class="tree-item file">📄 05_Medical_Insurance.pdf</div>
+            <div class="tree-item file">⚙️ application_backup.json</div>
+          </div>
+        </div>
+
+        <div class="sidebar-box">
+          <h2 class="sidebar-heading">Related Official Portals</h2>
+          <p class="sidebar-desc">Verified official links for Russian visa applications and consular services:</p>
+          
+          <ul class="sidebar-link-list">
+            <li>
+              <a class="sidebar-link" href="https://visa.kdmid.ru" target="_blank" rel="noopener noreferrer">
+                <span class="link-title">Official Consular Form (EVA)</span>
+                <span class="link-url">visa.kdmid.ru &nearr;</span>
+              </a>
+            </li>
+            <li>
+              <a class="sidebar-link" href="https://electronic-visa.kdmid.ru" target="_blank" rel="noopener noreferrer">
+                <span class="link-title">Official Russian E-Visa Portal</span>
+                <span class="link-url">electronic-visa.kdmid.ru &nearr;</span>
+              </a>
+            </li>
+            <li>
+              <a class="sidebar-link" href="https://russia-visacentre.com" target="_blank" rel="noopener noreferrer">
+                <span class="link-title">Russian Visa Application Centre</span>
+                <span class="link-url">russia-visacentre.com &nearr;</span>
+              </a>
+            </li>
+            <li>
+              <a class="sidebar-link" href="https://www.mid.ru/en/" target="_blank" rel="noopener noreferrer">
+                <span class="link-title">Ministry of Foreign Affairs (MID)</span>
+                <span class="link-url">mid.ru/en &nearr;</span>
+              </a>
+            </li>
+            <li>
+              <a class="sidebar-link" href="https://www.gov.uk/foreign-travel-advice/russia" target="_blank" rel="noopener noreferrer">
+                <span class="link-title">FCDO Foreign Travel Advice: Russia</span>
+                <span class="link-url">gov.uk/foreign-travel-advice/russia &nearr;</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Sidebar Save Card -->
+        <div class="sidebar-card-highlight">
+          <h3 class="highlight-title">Save & Resume Later</h3>
+          <p class="highlight-desc">Your checklist state and attached documents are saved locally in your browser memory.</p>
+          <button type="button" class="btn btn-secondary btn-block btn-sm" id="sidebarSaveBtn">
+            Save Current Progress
+          </button>
+        </div>
+
+      </aside>
+
+    </div>
+
+  </div>
+
+  <!-- Page Footer -->
+  <footer class="app-footer" role="contentinfo">
+    <div class="container footer-inner">
+      <div class="footer-left">
+        <p class="footer-brand-title">Russian Visa Application Guide & Checklist Portal</p>
+        <p class="footer-copyright">
+          Independent visa preparation service &bull; All personal data & files remain 100% on your local computer &bull; Not an official government body.
+        </p>
+      </div>
+      <div class="footer-right">
+        <ul class="footer-nav">
+          <li><a href="#" id="footerTourLink" class="footer-link">Walkthrough & Guide</a></li>
+          <li><a href="https://visa.kdmid.ru" target="_blank" rel="noopener noreferrer" class="footer-link">Official MID Form</a></li>
+          <li><a href="https://electronic-visa.kdmid.ru" target="_blank" rel="noopener noreferrer" class="footer-link">E-Visa Portal</a></li>
+          <li><a href="https://russia-visacentre.com" target="_blank" rel="noopener noreferrer" class="footer-link">Visa Centre</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Start New Application Modal -->
+  <div class="modal-backdrop" id="newAppModal" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">Start New Visa Application</h2>
+        <button type="button" class="modal-close-icon" id="cancelModalBtn" aria-label="Close modal">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label" for="modalApplicantName">Applicant Full Name</label>
+          <input type="text" class="form-input" id="modalApplicantName" placeholder="e.g. John Smith" value="John Smith">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="modalVisaSelect">Select Visa Category</label>
+          <select class="form-select" id="modalVisaSelect">
+            <option value="tourist" selected>Tourist Visa (Up to 90 / 180 Days)</option>
+            <option value="business">Business Visa (30 Days – 1 Year)</option>
+            <option value="work">Work Visa (1 to 3 Years)</option>
+            <option value="student">Student / Study Visa</option>
+            <option value="private">Private / Family Visa</option>
+            <option value="evisa">Unified E-Visa (16 Days)</option>
+            <option value="transit">Transit Visa</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="modalNationality">Applicant Citizenship / Passport Issuer</label>
+          <select class="form-select" id="modalNationality">
+            <option value="British Citizen" selected>United Kingdom (British Citizen)</option>
+            <option value="United States">United States</option>
+            <option value="German">Germany</option>
+            <option value="French">France</option>
+            <option value="Italian">Italy</option>
+            <option value="Chinese">China</option>
+            <option value="Indian">India</option>
+            <option value="Emirati">United Arab Emirates</option>
+            <option value="Canadian">Canada</option>
+            <option value="Australian">Australia</option>
+            <option value="Other">Other Nationality</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Number of Entries Requested</label>
+          <div class="radio-pills-group">
+            <label class="pill-option active">
+              <input type="radio" name="modalEntries" value="Single Entry" checked>
+              <span>Single Entry</span>
+            </label>
+            <label class="pill-option">
+              <input type="radio" name="modalEntries" value="Double Entry">
+              <span>Double Entry</span>
+            </label>
+            <label class="pill-option">
+              <input type="radio" name="modalEntries" value="Multiple Entry">
+              <span>Multiple Entry</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="modalCloseSecondaryBtn">Cancel</button>
+        <button type="button" class="btn btn-primary" id="confirmStartBtn">
+          <span>Create & Launch Checklist</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Spotlight Walkthrough Overlay Structure -->
+  <div class="tour-overlay" id="tourOverlay" style="display: none;" role="dialog" aria-modal="true" aria-label="Portal Walkthrough">
+    <!-- Spotlight Cutout Box -->
+    <div class="tour-spotlight-box" id="tourSpotlightBox"></div>
+
+    <!-- Floating Tour Card -->
+    <div class="tour-popover" id="tourPopover">
+      <div class="tour-header">
+        <div class="tour-badge-wrap">
+          <span class="tour-step-badge" id="tourStepBadge">Step 1 of 4</span>
+          <span class="tour-tag">PORTAL WALKTHROUGH</span>
+        </div>
+        <button type="button" class="tour-close-btn" id="tourCloseBtn" aria-label="Exit tour">&times;</button>
+      </div>
+
+      <div class="tour-body">
+        <h3 class="tour-title" id="tourTitle">1. Select Your Visa Category</h3>
+        <p class="tour-description" id="tourDescription">
+          Click any visa category card to immediately load its tailored document checklist below.
+        </p>
+      </div>
+
+      <div class="tour-footer">
+        <div class="tour-dots" id="tourDots">
+          <span class="tour-dot active"></span>
+          <span class="tour-dot"></span>
+          <span class="tour-dot"></span>
+          <span class="tour-dot"></span>
+        </div>
+
+        <div class="tour-actions">
+          <button type="button" class="btn btn-sm btn-outline" id="tourPrevBtn">Back</button>
+          <button type="button" class="btn btn-sm btn-primary" id="tourNextBtn">Next &rarr;</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden File Input for JSON Backup Restore -->
+  <input type="file" id="importFileInput" accept=".json" style="display: none;">
+
+  <!-- Application Logic -->
+  <script src="app.js"></script>
+</body>
+</html>
