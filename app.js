@@ -639,6 +639,18 @@ let currentTourStep = 0;
 let isTourActive = false;
 
 // ============================================================================
+// DOM Element Cache for Performance Optimization
+// ============================================================================
+
+const domCache = {};
+function getCachedEl(id) {
+  if (!domCache[id]) {
+    domCache[id] = document.getElementById(id);
+  }
+  return domCache[id];
+}
+
+// ============================================================================
 // Initialization & Theme Handling
 // ============================================================================
 
@@ -730,32 +742,32 @@ async function renderTaskList() {
   }
 
   // Update Applicant Meta
-  const nameInput = document.getElementById('applicantNameInput');
+  const nameInput = getCachedEl('applicantNameInput');
   if (nameInput) nameInput.value = currentSession.applicantName || 'Applicant Name';
 
-  const natDisplay = document.getElementById('applicantNatDisplay');
+  const natDisplay = getCachedEl('applicantNatDisplay');
   if (natDisplay) natDisplay.textContent = currentSession.nationality || 'British Citizen';
 
-  const entriesDisplay = document.getElementById('applicantEntriesDisplay');
+  const entriesDisplay = getCachedEl('applicantEntriesDisplay');
   if (entriesDisplay) entriesDisplay.textContent = currentSession.entries || 'Single Entry';
 
   // Update Headings
-  const caption = document.getElementById('activeCategoryCaption');
+  const caption = getCachedEl('activeCategoryCaption');
   if (caption) caption.textContent = `${visaDef.title} Checklist`;
 
-  const heading = document.getElementById('checklistHeading');
+  const heading = getCachedEl('checklistHeading');
   if (heading) heading.textContent = `${visaDef.title} Requirements`;
 
   const total = currentSession.tasks.length;
   const verifiedOrAttached = currentSession.tasks.filter(t => t.status === 'done' || t.status === 'attached').length;
 
-  const completedElem = document.getElementById('completedCount');
+  const completedElem = getCachedEl('completedCount');
   if (completedElem) completedElem.textContent = verifiedOrAttached;
 
-  const totalElem = document.getElementById('totalCount');
+  const totalElem = getCachedEl('totalCount');
   if (totalElem) totalElem.textContent = total;
 
-  const listContainer = document.getElementById('gdsTaskList');
+  const listContainer = getCachedEl('gdsTaskList');
   if (!listContainer) return;
 
   listContainer.innerHTML = '';
