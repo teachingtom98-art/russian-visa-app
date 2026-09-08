@@ -760,6 +760,8 @@ async function renderTaskList() {
 
   listContainer.innerHTML = '';
 
+  const fragment = document.createDocumentFragment();
+
   for (let index = 0; index < currentSession.tasks.length; index++) {
     const task = currentSession.tasks[index];
     const li = document.createElement('li');
@@ -918,8 +920,10 @@ async function renderTaskList() {
       ${guidanceHtml}
     `;
 
-    listContainer.appendChild(li);
+    fragment.appendChild(li);
   }
+
+  listContainer.appendChild(fragment);
 }
 
 async function toggleTaskStatus(index) {
