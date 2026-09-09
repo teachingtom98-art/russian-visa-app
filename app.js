@@ -788,7 +788,8 @@ async function renderTaskList() {
         // Fetch thumbnail from IndexedDB if available
         const idbRecord = await idbGetFile(`${currentSession.visaType}_${task.id}`);
         if (idbRecord && idbRecord.dataUrl) {
-          previewHtml = `<img src="${idbRecord.dataUrl}" class="doc-thumbnail" alt="Preview">`;
+          // dataUrls are necessary for image previews, use escapeHtml to prevent attribute injection
+          previewHtml = `<img src="${escapeHtml(idbRecord.dataUrl)}" class="doc-thumbnail" alt="Preview">`;
         } else {
           previewHtml = `🖼️`;
         }
@@ -802,7 +803,7 @@ async function renderTaskList() {
             ${previewHtml}
             <div>
               <span class="file-name-text">${escapeHtml(attachedFileInfo.name)}</span>
-              <span class="file-size-tag">(${attachedFileInfo.size}) &bull; Standardized: <code>${task.standardName}_${sanitizeName(currentSession.applicantName)}.${getFileExt(attachedFileInfo.name)}</code></span>
+              <span class="file-size-tag">(${escapeHtml(attachedFileInfo.size)}) &bull; Standardized: <code>${escapeHtml(task.standardName)}_${sanitizeName(currentSession.applicantName)}.${escapeHtml(getFileExt(attachedFileInfo.name))}</code></span>
             </div>
           </div>
           <div class="file-actions">
@@ -884,7 +885,7 @@ async function renderTaskList() {
         <details class="task-guidance-details">
           <summary class="task-guidance-summary">Requirements & preparation guidance</summary>
           <div class="task-guidance-text">
-            <p>${task.guidance}</p>
+            <p>${escapeHtml(task.guidance)}</p>
           </div>
         </details>
       `;
@@ -895,13 +896,13 @@ async function renderTaskList() {
         <div class="task-main">
           <div class="task-title-wrap">
             <span class="task-title" onclick="toggleTaskStatus(${index})">
-              ${task.title}
+              ${escapeHtml(task.title)}
             </span>
           </div>
-          <p class="task-hint">${task.hint}</p>
+          <p class="task-hint">${escapeHtml(task.hint)}</p>
           <div class="task-meta-tags">
-            ${task.source ? `<a href="${task.sourceUrl || '#'}" target="_blank" rel="noopener noreferrer" class="source-tag">Source: ${task.source} &nearr;</a>` : ''}
-            ${task.verifiedDate ? `<span class="verified-tag">&bull; Verified: ${task.verifiedDate}</span>` : ''}
+            ${task.source ? `<a href="${sanitizeUrl(task.sourceUrl || '#')}" target="_blank" rel="noopener noreferrer" class="source-tag">Source: ${escapeHtml(task.source)} &nearr;</a>` : ''}
+            ${task.verifiedDate ? `<span class="verified-tag">&bull; Verified: ${escapeHtml(task.verifiedDate)}</span>` : ''}
           </div>
         </div>
 
@@ -1221,7 +1222,7 @@ function generatePrintableSummaryHtml() {
       statusColor = '#D97706';
     }
 
-    const attachedInfo = task.attachedMeta ? `Attached: <strong>${escapeHtml(task.attachedMeta.name)}</strong> (${task.attachedMeta.size})` : 'No file attached';
+    const attachedInfo = task.attachedMeta ? `Attached: <strong>${escapeHtml(task.attachedMeta.name)}</strong> (${escapeHtml(task.attachedMeta.size)})` : 'No file attached';
 
     taskRowsHtml += `
       <tr style="border-bottom: 1px solid #E2E8F0;">
@@ -1539,6 +1540,16 @@ async function clearWorkspaceData() {
 // ============================================================================
 // String & Utility Helpers
 // ============================================================================
+
+function sanitizeUrl(url) {
+  if (!url) return '#';
+  const u = String(url).trim();
+  const lowerU = u.toLowerCase();
+  if (lowerU.startsWith('javascript:') || lowerU.startsWith('data:') || lowerU.startsWith('vbscript:')) {
+    return '#';
+  }
+  return u;
+}
 
 function sanitizeName(name) {
   return (name || 'Applicant').replace(/[^a-zA-Z0-9_-]/g, '_');
