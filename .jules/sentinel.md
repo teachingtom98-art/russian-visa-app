@@ -1,0 +1,4 @@
+## 2023-10-18 - DOM XSS via Local State Restore
+**Vulnerability:** A Stored DOM XSS vulnerability existed where the application restored its state from a locally uploaded JSON backup file and interpolated properties directly into `innerHTML` (e.g. `${task.title}`) without HTML escaping.
+**Learning:** Even in a purely client-side, local-first architecture with zero backend, local state files represent a trust boundary. If a user is tricked into importing a malicious backup `.json` file, untrusted data is injected into the DOM, leading to XSS.
+**Prevention:** Always treat imported state/files as untrusted input. Use context-aware output encoding (like `escapeHtml` for HTML context) before interpolating any data into the DOM, regardless of whether the data was "locally" saved.
