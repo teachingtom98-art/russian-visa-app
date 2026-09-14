@@ -1,0 +1,4 @@
+## 2026-09-14 - Stored XSS via Client-Side JSON Restore and IndexedDB
+**Vulnerability:** Client-side file imports (specifically JSON state backups) and values retrieved from local-first storage like IndexedDB were being injected directly into the DOM using `.innerHTML` without sufficient sanitization.
+**Learning:** Even in local-first, zero-backend single-page applications, persistent storage mechanisms and file upload/restore features represent critical untrusted input vectors for Stored XSS. Attackers could craft malicious JSON backups that, when restored by a victim, execute arbitrary scripts in the context of the application.
+**Prevention:** All data sourced from local storage, IndexedDB, or uploaded files must be treated as untrusted and strictly sanitized (e.g. using `escapeHtml`) prior to DOM insertion. Furthermore, URI schemes must be rigorously validated (e.g., ensuring `http://` or `https://`) to prevent JavaScript URI execution.
