@@ -758,6 +758,7 @@ async function renderTaskList() {
   const listContainer = document.getElementById('gdsTaskList');
   if (!listContainer) return;
 
+  // Sanitize task fields to prevent Stored XSS
   listContainer.innerHTML = '';
 
   for (let index = 0; index < currentSession.tasks.length; index++) {
@@ -884,7 +885,7 @@ async function renderTaskList() {
         <details class="task-guidance-details">
           <summary class="task-guidance-summary">Requirements & preparation guidance</summary>
           <div class="task-guidance-text">
-            <p>${task.guidance}</p>
+            <p>${escapeHtml(task.guidance)}</p>
           </div>
         </details>
       `;
@@ -895,13 +896,13 @@ async function renderTaskList() {
         <div class="task-main">
           <div class="task-title-wrap">
             <span class="task-title" onclick="toggleTaskStatus(${index})">
-              ${task.title}
+              ${escapeHtml(task.title)}
             </span>
           </div>
-          <p class="task-hint">${task.hint}</p>
+          <p class="task-hint">${escapeHtml(task.hint)}</p>
           <div class="task-meta-tags">
-            ${task.source ? `<a href="${task.sourceUrl || '#'}" target="_blank" rel="noopener noreferrer" class="source-tag">Source: ${task.source} &nearr;</a>` : ''}
-            ${task.verifiedDate ? `<span class="verified-tag">&bull; Verified: ${task.verifiedDate}</span>` : ''}
+            ${task.source ? `<a href="${(task.sourceUrl && (task.sourceUrl.startsWith('http://') || task.sourceUrl.startsWith('https://'))) ? escapeHtml(task.sourceUrl) : '#'}" target="_blank" rel="noopener noreferrer" class="source-tag">Source: ${escapeHtml(task.source)} &nearr;</a>` : ''}
+            ${task.verifiedDate ? `<span class="verified-tag">&bull; Verified: ${escapeHtml(task.verifiedDate)}</span>` : ''}
           </div>
         </div>
 
@@ -1221,7 +1222,7 @@ function generatePrintableSummaryHtml() {
       statusColor = '#D97706';
     }
 
-    const attachedInfo = task.attachedMeta ? `Attached: <strong>${escapeHtml(task.attachedMeta.name)}</strong> (${task.attachedMeta.size})` : 'No file attached';
+    const attachedInfo = task.attachedMeta ? `Attached: <strong>${escapeHtml(task.attachedMeta.name)}</strong> (${escapeHtml(task.attachedMeta.size)})` : 'No file attached';
 
     taskRowsHtml += `
       <tr style="border-bottom: 1px solid #E2E8F0;">
@@ -1557,7 +1558,7 @@ function formatBytes(bytes) {
 }
 
 function escapeHtml(str) {
-  return (str || '').replace(/[&<>"']/g, function(m) {
+  return String(str || '').replace(/[&<>"']/g, function(m) {
     return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
   });
 }
