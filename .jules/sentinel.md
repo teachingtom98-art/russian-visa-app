@@ -1,0 +1,5 @@
+
+## 2026-09-17 - Prevent DOM-based XSS via Untrusted JSON File Imports
+**Vulnerability:** A DOM-based Cross-Site Scripting (XSS) vulnerability was found when importing JSON backup files. The application parses `session.tasks` directly from the imported JSON and injects task attributes like `title`, `hint`, and `guidance` into `innerHTML` within `app.js` without escaping the content. Additionally, `sourceUrl` was injected into `href` attributes, making it susceptible to `javascript:` payload execution.
+**Learning:** Even though this application is fully local-first (using IndexedDB and localStorage) with no remote backend, it accepts file uploads (JSON state imports). Untrusted data from local file imports can be just as dangerous as data fetched from an API if it is blindly trusted and injected into the DOM.
+**Prevention:** Always treat imported file data (like JSON backups) as untrusted. Sanitize strings using `escapeHtml()` before placing them into `innerHTML`, and explicitly validate/sanitize `href` URLs to only allow safe schemes like `http:` and `https:`.
