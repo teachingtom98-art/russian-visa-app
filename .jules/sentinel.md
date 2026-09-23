@@ -1,0 +1,4 @@
+## 2024-05-15 - [HIGH] Fix XSS via unsafe HTML interpolation in task rendering
+**Vulnerability:** XSS vulnerability found in `app.js` during the rendering of the dynamic task checklist (`renderTaskList`). User-controlled data from JSON backups (such as `task.title`, `task.hint`, `task.source`, `task.verifiedDate`, and `task.guidance`) was interpolated directly into `.innerHTML` without sanitization. `task.sourceUrl` was also vulnerable to `javascript:` payload attacks in the `href` attribute.
+**Learning:** Even local-first applications are vulnerable to XSS if they import unsanitized external JSON state and render it without encoding.
+**Prevention:** Used `escapeHtml()` utility on all text properties before DOM interpolation. Added `sanitizeUrl()` helper to strictly enforce `http:` or `https:` URL schemes for `href` attributes.
