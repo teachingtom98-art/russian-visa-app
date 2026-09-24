@@ -1,0 +1,9 @@
+## 2024-09-24 - Stored DOM XSS via Unsanitized JSON Import
+**Vulnerability:** A Stored DOM XSS vulnerability was identified in the application. When a user exports their progress, they download a JSON file containing their session data, including tasks. This JSON file can be modified to inject malicious payloads (e.g., `<script>alert(1)</script>` or `javascript:alert(1)`) into fields like `task.title`, `task.hint`, `task.sourceUrl`, and `task.guidance`. When this modified JSON is imported back into the application, the unsanitized fields are rendered directly into the DOM via `innerHTML` in `renderTaskList()`, triggering the XSS payload.
+
+**Learning:** This vulnerability highlights a crucial security gap: implicitly trusting data restored from local files. Even though the application uses a local-first architecture and has no backend to store state, data restored from a file (like a JSON backup) must be treated with the same suspicion as data arriving from an external API or user input form. The assumption that locally stored data is "safe" is flawed because the user (or an attacker modifying the file before import) has full control over its contents.
+
+**Prevention:** To prevent this, all data originating from imported files must be sanitized before being inserted into the DOM. This includes:
+1.  **Context-Aware HTML Escaping:** Using a function like `escapeHtml()` to neutralize HTML characters (`<`, `>`, `&`, `"`, `'`) in fields rendered as text content or attributes.
+2.  **URL Sanitization:** Using a function like `sanitizeUrl()` to parse URLs and ensure the protocol is safe (e.g., `http:` or `https:`, blocking `javascript:` URIs) before setting them in `href` or `src` attributes.
+3.  **Strict Validation at Import:** Validating the schema of the imported JSON to ensure the data types and structure match expectations, rejecting malformed or unexpected data.
