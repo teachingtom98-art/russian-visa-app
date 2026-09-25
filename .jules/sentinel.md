@@ -1,0 +1,4 @@
+## 2024-09-25 - Prevent DOM XSS from Malicious JSON Import
+**Vulnerability:** The application was vulnerable to DOM-based Cross-Site Scripting (XSS). It imported JSON files representing the workspace state and directly injected strings like `task.title`, `task.hint`, `task.sourceUrl`, and `task.guidance` into the DOM using `.innerHTML` within `renderTaskList()`.
+**Learning:** Even though the JSON is generated locally by the application, when a user imports a JSON file, the contents should be treated as untrusted input. A malicious actor could craft a JSON file with embedded XSS payloads and send it to a victim.
+**Prevention:** Always sanitize data before injecting it into the DOM, especially when using `.innerHTML`. We applied `escapeHtml` to text fields and introduced a `sanitizeUrl` function to ensure URLs use safe protocols (`http:` or `https:`) and prevent `javascript:` execution.
