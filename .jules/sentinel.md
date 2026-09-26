@@ -1,0 +1,4 @@
+## 2024-05-18 - DOM XSS via Insecure JSON State Import
+**Vulnerability:** The application was vulnerable to Stored DOM XSS when parsing state imported via JSON. Untrusted data like `task.title`, `task.hint`, `task.sourceUrl`, and `task.guidance` were directly inserted into the DOM without escaping or URL sanitization using `.innerHTML`.
+**Learning:** Even without a traditional backend database, local-first applications relying on localStorage or file-based state importing (like a "restore backup" feature) must treat imported state as entirely untrusted input. An attacker could craft a malicious JSON backup file and social engineer a user into importing it, executing an XSS payload.
+**Prevention:** Consistently use `escapeHtml` for any variable rendered via template literals inserted into `innerHTML`. Apply a `sanitizeUrl` whitelist (enforcing `http:`/`https:`) on any dynamic `href` attributes to prevent `javascript:` execution.

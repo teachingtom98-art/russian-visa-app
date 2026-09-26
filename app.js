@@ -802,7 +802,7 @@ async function renderTaskList() {
             ${previewHtml}
             <div>
               <span class="file-name-text">${escapeHtml(attachedFileInfo.name)}</span>
-              <span class="file-size-tag">(${attachedFileInfo.size}) &bull; Standardized: <code>${task.standardName}_${sanitizeName(currentSession.applicantName)}.${getFileExt(attachedFileInfo.name)}</code></span>
+              <span class="file-size-tag">(${escapeHtml(attachedFileInfo.size)}) &bull; Standardized: <code>${escapeHtml(task.standardName)}_${sanitizeName(currentSession.applicantName)}.${getFileExt(attachedFileInfo.name)}</code></span>
             </div>
           </div>
           <div class="file-actions">
@@ -884,7 +884,7 @@ async function renderTaskList() {
         <details class="task-guidance-details">
           <summary class="task-guidance-summary">Requirements & preparation guidance</summary>
           <div class="task-guidance-text">
-            <p>${task.guidance}</p>
+            <p>${escapeHtml(task.guidance)}</p>
           </div>
         </details>
       `;
@@ -895,13 +895,13 @@ async function renderTaskList() {
         <div class="task-main">
           <div class="task-title-wrap">
             <span class="task-title" onclick="toggleTaskStatus(${index})">
-              ${task.title}
+              ${escapeHtml(task.title)}
             </span>
           </div>
-          <p class="task-hint">${task.hint}</p>
+          <p class="task-hint">${escapeHtml(task.hint)}</p>
           <div class="task-meta-tags">
-            ${task.source ? `<a href="${task.sourceUrl || '#'}" target="_blank" rel="noopener noreferrer" class="source-tag">Source: ${task.source} &nearr;</a>` : ''}
-            ${task.verifiedDate ? `<span class="verified-tag">&bull; Verified: ${task.verifiedDate}</span>` : ''}
+            ${task.source ? `<a href="${sanitizeUrl(task.sourceUrl) || '#'}" target="_blank" rel="noopener noreferrer" class="source-tag">Source: ${escapeHtml(task.source)} &nearr;</a>` : ''}
+            ${task.verifiedDate ? `<span class="verified-tag">&bull; Verified: ${escapeHtml(task.verifiedDate)}</span>` : ''}
           </div>
         </div>
 
@@ -1560,6 +1560,18 @@ function escapeHtml(str) {
   return (str || '').replace(/[&<>"']/g, function(m) {
     return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
   });
+}
+
+function sanitizeUrl(url) {
+  if (!url) return '#';
+  try {
+    const parsedUrl = new URL(url, window.location.href);
+    if (parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:') {
+      return url;
+    }
+  } catch (e) {
+  }
+  return '#';
 }
 
 // ============================================================================
