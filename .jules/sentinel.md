@@ -1,0 +1,4 @@
+## 2024-05-24 - Cross-Site Scripting (XSS) via JSON state import
+**Vulnerability:** Untrusted string data (`title`, `hint`, `source`, `verifiedDate`, `guidance`, and URLs) from imported JSON backups were being rendered directly into the DOM via innerHTML in `renderTaskList` without sanitization.
+**Learning:** Local-first applications that allow importing state backups are vulnerable to XSS if the imported data is not treated as untrusted user input. Even though the application doesn't have a backend, malicious JSON files can be crafted to execute scripts when imported and rendered.
+**Prevention:** Always sanitize imported state data before rendering it in the DOM, utilizing functions like `escapeHtml` for text and validating/sanitizing URL protocols (e.g., enforcing `http://` or `https://`).
