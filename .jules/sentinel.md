@@ -1,0 +1,4 @@
+## 2024-10-24 - [Local JSON Import XSS]
+**Vulnerability:** XSS vulnerability through maliciously crafted local JSON state imports.
+**Learning:** In local-first applications where users can import state files (like backups), trust boundaries extend to the imported files. Even though there's no backend, malicious actors could construct a state file with arbitrary scripts in fields like `title`, `hint`, or `source` and trick users into importing it, leading to XSS when rendering the DOM.
+**Prevention:** Sanitize and escape all imported data, specifically strings injected directly into HTML via `innerHTML` or attributes like `href`. Use `escapeHtml` for content strings and enforce URL schemes with custom sanitization like `sanitizeUrl` for anchor tags.
