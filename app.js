@@ -1201,9 +1201,9 @@ function dataUrlToBlob(dataUrl) {
 
 function generatePrintableSummaryHtml() {
   const visaDef = VISA_DATA[currentSession.visaType] || VISA_DATA.tourist;
-  const doneCount = currentSession.tasks.filter(t => t.status === 'done').length;
-  const attachedCount = currentSession.tasks.filter(t => t.status === 'attached').length;
   const totalCount = currentSession.tasks.length;
+  let doneCount = 0;
+  let attachedCount = 0;
 
   let taskRowsHtml = '';
   currentSession.tasks.forEach((task, i) => {
@@ -1211,9 +1211,11 @@ function generatePrintableSummaryHtml() {
     let statusColor = '#64748B';
 
     if (task.status === 'done') {
+      doneCount++;
       statusText = '&#10003; VERIFIED';
       statusColor = '#059669';
     } else if (task.status === 'attached') {
+      attachedCount++;
       statusText = '&#128193; ATTACHED';
       statusColor = '#0284C7';
     } else if (task.status === 'in-progress') {
