@@ -43,12 +43,25 @@ function getDB() {
   });
 }
 
+async function withStore(mode, callback) {
+  const db = await getDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(IDB_STORE, mode);
+    const store = tx.objectStore(IDB_STORE);
+    const req = callback(store);
+
+    if (req) {
+      req.onsuccess = () => resolve(req.result !== undefined ? req.result : true);
+      req.onerror = (e) => reject(e.target.error);
+    } else {
+      resolve(true);
+    }
+  });
+}
+
 async function idbStoreFile(id, file, dataUrl) {
   try {
-    const db = await getDB();
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(IDB_STORE, 'readwrite');
-      const store = tx.objectStore(IDB_STORE);
+    return await withStore('readwrite', store => {
       const record = {
         id: id,
         name: file.name,
@@ -58,9 +71,7 @@ async function idbStoreFile(id, file, dataUrl) {
         dataUrl: dataUrl,
         savedAt: new Date().toISOString()
       };
-      const req = store.put(record);
-      req.onsuccess = () => resolve(true);
-      req.onerror = (e) => reject(e.target.error);
+      return store.put(record);
     });
   } catch (err) {
     console.error('Failed to store file in IndexedDB:', err);
@@ -70,14 +81,8 @@ async function idbStoreFile(id, file, dataUrl) {
 
 async function idbGetFile(id) {
   try {
-    const db = await getDB();
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(IDB_STORE, 'readonly');
-      const store = tx.objectStore(IDB_STORE);
-      const req = store.get(id);
-      req.onsuccess = () => resolve(req.result || null);
-      req.onerror = (e) => reject(e.target.error);
-    });
+    const result = await withStore('readonly', store => store.get(id));
+    return result === true ? null : (result || null);
   } catch (err) {
     console.error('Failed to get file from IndexedDB:', err);
     return null;
@@ -86,14 +91,8 @@ async function idbGetFile(id) {
 
 async function idbDeleteFile(id) {
   try {
-    const db = await getDB();
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(IDB_STORE, 'readwrite');
-      const store = tx.objectStore(IDB_STORE);
-      const req = store.delete(id);
-      req.onsuccess = () => resolve(true);
-      req.onerror = (e) => reject(e.target.error);
-    });
+    await withStore('readwrite', store => store.delete(id));
+    return true;
   } catch (err) {
     console.error('Failed to delete file from IndexedDB:', err);
   }
@@ -101,14 +100,8 @@ async function idbDeleteFile(id) {
 
 async function idbClearAll() {
   try {
-    const db = await getDB();
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(IDB_STORE, 'readwrite');
-      const store = tx.objectStore(IDB_STORE);
-      const req = store.clear();
-      req.onsuccess = () => resolve(true);
-      req.onerror = (e) => reject(e.target.error);
-    });
+    await withStore('readwrite', store => store.clear());
+    return true;
   } catch (err) {
     console.error('Failed to clear IndexedDB:', err);
   }
