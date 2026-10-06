@@ -118,6 +118,35 @@ async function idbClearAll() {
 // Visa Types & Standardized Task Requirements with Official Sources
 // ============================================================================
 
+const COMMON_REQUIREMENTS = {
+  PASSPORT: {
+    title: 'Valid Original Passport',
+    standardName: '01_Passport_Data_Page',
+    status: 'not-started',
+    source: 'MID Consular Regs',
+    sourceUrl: 'https://www.mid.ru/en/',
+    verifiedDate: 'Aug 2026'
+  },
+  PASSPORT_PHOTO: {
+    title: 'Passport Photo (35mm × 45mm)',
+    standardName: '02_Passport_Photo_35x45mm',
+    isPhoto: true,
+    status: 'not-started',
+    source: 'MID Specs',
+    sourceUrl: 'https://visa.kdmid.ru',
+    verifiedDate: 'Aug 2026',
+    guidance: 'Standard 35x45mm biometric photograph on light background.'
+  },
+  EVA_FORM: {
+    title: 'Electronic Visa Application (EVA) Form',
+    standardName: '03_Electronic_Visa_Application_EVA',
+    status: 'not-started',
+    source: 'visa.kdmid.ru',
+    sourceUrl: 'https://visa.kdmid.ru',
+    verifiedDate: 'Aug 2026'
+  }
+};
+
 const VISA_DATA = {
   tourist: {
     id: 'tourist',
@@ -125,14 +154,9 @@ const VISA_DATA = {
     category: 'Tourism & Sightseeing',
     tasks: [
       {
+        ...COMMON_REQUIREMENTS.PASSPORT,
         id: 't1',
-        title: 'Valid Original Passport',
-        standardName: '01_Passport_Data_Page',
         hint: 'Physically undamaged, 2+ consecutive blank visa pages, valid 6+ months past visa expiry.',
-        status: 'not-started',
-        source: 'MID Consular Regs',
-        sourceUrl: 'https://www.mid.ru/en/',
-        verifiedDate: 'Aug 2026',
         guidance: 'Upload a clear scan or photo of your passport biometric photo page. Must show all 4 corners and machine-readable zone (MRZ).'
       },
       {
@@ -147,26 +171,15 @@ const VISA_DATA = {
         guidance: 'Must state your full passport details, planned travel dates, hotel reservations, and official Russian MBT/PTO reference license number.'
       },
       {
+        ...COMMON_REQUIREMENTS.EVA_FORM,
         id: 't3',
-        title: 'Electronic Visa Application (EVA) Form',
-        standardName: '03_Electronic_Visa_Application_EVA',
         hint: 'Completed and submitted online at visa.kdmid.ru, printed on A4 paper, dated and signed.',
-        status: 'not-started',
-        source: 'visa.kdmid.ru',
-        sourceUrl: 'https://visa.kdmid.ru',
-        verifiedDate: 'Aug 2026',
         guidance: 'Ensure your name spelling, passport number, and host organization details match your tourist confirmation exactly.'
       },
       {
+        ...COMMON_REQUIREMENTS.PASSPORT_PHOTO,
         id: 't4',
-        title: 'Passport Photo (35mm × 45mm)',
-        standardName: '02_Passport_Photo_35x45mm',
-        isPhoto: true,
         hint: 'One recent standard colour biometric photo taken within the last 6 months against a plain light/white background.',
-        status: 'not-started',
-        source: 'ICAO / MID Criteria',
-        sourceUrl: 'https://visa.kdmid.ru',
-        verifiedDate: 'Aug 2026',
         guidance: 'The head must measure between 30mm and 36mm from crown to chin (70–80% of photo). No tinted glasses or decorative headgear.'
       },
       {
@@ -199,14 +212,9 @@ const VISA_DATA = {
     category: 'Commercial & Meetings',
     tasks: [
       {
+        ...COMMON_REQUIREMENTS.PASSPORT,
         id: 'b1',
-        title: 'Valid Original Passport',
-        standardName: '01_Passport_Data_Page',
         hint: 'Valid for at least 6 months past visa expiry with 2 blank pages.',
-        status: 'not-started',
-        source: 'MID Consular Regs',
-        sourceUrl: 'https://www.mid.ru/en/',
-        verifiedDate: 'Aug 2026',
         guidance: 'Ensure sufficient blank pages for multiple entry/exit consular stamps.'
       },
       {
@@ -221,14 +229,9 @@ const VISA_DATA = {
         guidance: 'Must be officially registered through the Russian Ministry of Internal Affairs (MVD) or Ministry of Foreign Affairs (MID).'
       },
       {
+        ...COMMON_REQUIREMENTS.EVA_FORM,
         id: 'b3',
-        title: 'Electronic Visa Application (EVA) Form',
-        standardName: '03_Electronic_Visa_Application_EVA',
         hint: 'Completed at visa.kdmid.ru with employer and host details.',
-        status: 'not-started',
-        source: 'visa.kdmid.ru',
-        sourceUrl: 'https://visa.kdmid.ru',
-        verifiedDate: 'Aug 2026',
         guidance: 'State the official Russian host organization name, TIN/INN number, and exact registered address.'
       },
       {
@@ -243,15 +246,9 @@ const VISA_DATA = {
         guidance: 'Must be printed on official company letterhead, stamped, and signed by an authorized director.'
       },
       {
+        ...COMMON_REQUIREMENTS.PASSPORT_PHOTO,
         id: 'b5',
-        title: 'Passport Photo (35mm × 45mm)',
-        standardName: '02_Passport_Photo_35x45mm',
-        isPhoto: true,
         hint: 'One recent standard passport photograph meeting biometric specs.',
-        status: 'not-started',
-        source: 'MID Specs',
-        sourceUrl: 'https://visa.kdmid.ru',
-        verifiedDate: 'Aug 2026',
         guidance: 'Glued securely to the designated box on the printed EVA application form.'
       },
       {
@@ -273,14 +270,9 @@ const VISA_DATA = {
     category: 'Official Employment & HQS',
     tasks: [
       {
+        ...COMMON_REQUIREMENTS.PASSPORT,
         id: 'w1',
-        title: 'Valid Passport (18+ Months Validity)',
-        standardName: '01_Passport_Data_Page',
         hint: 'Russian work visas require a minimum of 18 months passport validity from the start date.',
-        status: 'not-started',
-        source: 'MVD Work Migration',
-        sourceUrl: 'https://mvd.ru',
-        verifiedDate: 'Aug 2026',
         guidance: 'Check passport expiry carefully as work visas cannot exceed passport validity.'
       },
       {
@@ -306,26 +298,15 @@ const VISA_DATA = {
         guidance: 'Must contain official doctor signature, laboratory stamp, and match passport information.'
       },
       {
+        ...COMMON_REQUIREMENTS.PASSPORT_PHOTO,
         id: 'w4',
-        title: 'Passport Photo (35mm × 45mm)',
-        standardName: '02_Passport_Photo_35x45mm',
-        isPhoto: true,
         hint: 'One recent standard colour biometric photo on light background.',
-        status: 'not-started',
-        source: 'MID Specs',
-        sourceUrl: 'https://visa.kdmid.ru',
-        verifiedDate: 'Aug 2026',
         guidance: 'Standard 35x45mm biometric photograph on light background.'
       },
       {
+        ...COMMON_REQUIREMENTS.EVA_FORM,
         id: 'w5',
-        title: 'Electronic Visa Application Form',
-        standardName: '03_Electronic_Visa_Application_EVA',
         hint: 'Completed work visa application at visa.kdmid.ru.',
-        status: 'not-started',
-        source: 'visa.kdmid.ru',
-        sourceUrl: 'https://visa.kdmid.ru',
-        verifiedDate: 'Aug 2026',
         guidance: 'Specify employer details and work permit registration number.'
       },
       {
@@ -347,14 +328,9 @@ const VISA_DATA = {
     category: 'Education & Exchange',
     tasks: [
       {
+        ...COMMON_REQUIREMENTS.PASSPORT,
         id: 's1',
-        title: 'Passport (18+ Months Validity)',
-        standardName: '01_Passport_Data_Page',
         hint: 'At least 18 months validity from visa commencement date.',
-        status: 'not-started',
-        source: 'MID Consular Regs',
-        sourceUrl: 'https://www.mid.ru/en/',
-        verifiedDate: 'Aug 2026',
         guidance: 'Must contain at least 2 clean visa pages.'
       },
       {
@@ -380,15 +356,9 @@ const VISA_DATA = {
         guidance: 'Mandatory for all student visas.'
       },
       {
+        ...COMMON_REQUIREMENTS.PASSPORT_PHOTO,
         id: 's4',
-        title: 'Passport Photo (35mm × 45mm)',
-        standardName: '02_Passport_Photo_35x45mm',
-        isPhoto: true,
         hint: 'One recent standard colour biometric photo.',
-        status: 'not-started',
-        source: 'MID Specs',
-        sourceUrl: 'https://visa.kdmid.ru',
-        verifiedDate: 'Aug 2026',
         guidance: 'Standard 35x45mm biometric photograph on light background.'
       },
       {
@@ -410,14 +380,9 @@ const VISA_DATA = {
     category: 'Friends & Family',
     tasks: [
       {
+        ...COMMON_REQUIREMENTS.PASSPORT,
         id: 'p1',
-        title: 'Valid Original Passport',
-        standardName: '01_Passport_Data_Page',
         hint: 'Valid for at least 6 months past visa expiry with 2 blank pages.',
-        status: 'not-started',
-        source: 'MID Consular Regs',
-        sourceUrl: 'https://www.mid.ru/en/',
-        verifiedDate: 'Aug 2026',
         guidance: 'Must be in pristine physical condition.'
       },
       {
@@ -443,26 +408,15 @@ const VISA_DATA = {
         guidance: 'Required for simplified close-relative application route.'
       },
       {
+        ...COMMON_REQUIREMENTS.PASSPORT_PHOTO,
         id: 'p4',
-        title: 'Passport Photo (35mm × 45mm)',
-        standardName: '02_Passport_Photo_35x45mm',
-        isPhoto: true,
         hint: 'Recent 35x45mm biometric photo on light background.',
-        status: 'not-started',
-        source: 'MID Specs',
-        sourceUrl: 'https://visa.kdmid.ru',
-        verifiedDate: 'Aug 2026',
         guidance: 'Standard 35x45mm biometric photograph on light background.'
       },
       {
+        ...COMMON_REQUIREMENTS.EVA_FORM,
         id: 'p5',
-        title: 'Electronic Visa Application Form',
-        standardName: '03_Electronic_Visa_Application_EVA',
         hint: 'Completed on visa.kdmid.ru with residential host address in Russia.',
-        status: 'not-started',
-        source: 'visa.kdmid.ru',
-        sourceUrl: 'https://visa.kdmid.ru',
-        verifiedDate: 'Aug 2026',
         guidance: 'Provide full address and passport details of the host.'
       }
     ]
@@ -536,14 +490,9 @@ const VISA_DATA = {
     category: 'Passing Through Russia',
     tasks: [
       {
+        ...COMMON_REQUIREMENTS.PASSPORT,
         id: 'tr1',
-        title: 'Valid Original Passport',
-        standardName: '01_Passport_Data_Page',
         hint: 'Valid for at least 6 months past transit date with 2 clean pages.',
-        status: 'not-started',
-        source: 'MID Consular Regs',
-        sourceUrl: 'https://www.mid.ru/en/',
-        verifiedDate: 'Aug 2026',
         guidance: 'Requires at least 2 consecutive blank visa pages.'
       },
       {
@@ -569,26 +518,15 @@ const VISA_DATA = {
         guidance: 'Visa or passport showing entry eligibility for destination.'
       },
       {
+        ...COMMON_REQUIREMENTS.PASSPORT_PHOTO,
         id: 'tr4',
-        title: 'Passport Photo (35mm × 45mm)',
-        standardName: '02_Passport_Photo_35x45mm',
-        isPhoto: true,
         hint: 'One recent standard colour biometric photo.',
-        status: 'not-started',
-        source: 'MID Specs',
-        sourceUrl: 'https://visa.kdmid.ru',
-        verifiedDate: 'Aug 2026',
         guidance: 'Standard 35x45mm biometric photo on light background.'
       },
       {
+        ...COMMON_REQUIREMENTS.EVA_FORM,
         id: 'tr5',
-        title: 'Electronic Visa Application Form (EVA)',
-        standardName: '03_Electronic_Visa_Application_EVA',
         hint: 'Select Transit category at visa.kdmid.ru.',
-        status: 'not-started',
-        source: 'visa.kdmid.ru',
-        sourceUrl: 'https://visa.kdmid.ru',
-        verifiedDate: 'Aug 2026',
         guidance: 'Detail your exact transit stopover dates and flight numbers.'
       }
     ]
