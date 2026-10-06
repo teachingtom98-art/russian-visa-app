@@ -686,10 +686,14 @@ async function selectVisaCategory(visaId, shouldScroll = true) {
   saveSessionToStorage(true, `Loaded ${VISA_DATA[visaId].title} Checklist`);
 
   if (shouldScroll) {
-    const checklistSection = document.getElementById('checklistContainer');
-    if (checklistSection) {
-      checklistSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    scrollToChecklist();
+  }
+}
+
+function scrollToChecklist() {
+  const checklistSection = document.getElementById('checklistContainer');
+  if (checklistSection) {
+    checklistSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 }
 
@@ -1740,10 +1744,7 @@ function setupEventListeners() {
       updateCardsVisualState(selectedType);
       await renderTaskList();
 
-      const checklistSection = document.getElementById('checklistContainer');
-      if (checklistSection) {
-        checklistSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
+      scrollToChecklist();
     };
   }
 
