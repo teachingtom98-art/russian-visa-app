@@ -1052,12 +1052,23 @@ async function exportDocumentPackageZip() {
 
   // 2. Fetch Attached Files from IndexedDB & Add with Standardized Naming
   let attachedCount = 0;
-  for (let idx = 0; idx < currentSession.tasks.length; idx++) {
-    const task = currentSession.tasks[idx];
+
+  // Optimisation: Fetch all attached files concurrently instead of inside a loop
+  const tasksWithFiles = await Promise.all(
+    currentSession.tasks.map(async (task) => {
+      let fileRecord = null;
+      if (task.attachedMeta) {
+        const fileId = `${currentSession.visaType}_${task.id}`;
+        fileRecord = await idbGetFile(fileId);
+      }
+      return { task, fileRecord };
+    })
+  );
+
+  for (let idx = 0; idx < tasksWithFiles.length; idx++) {
+    const { task, fileRecord } = tasksWithFiles[idx];
+
     if (task.attachedMeta) {
-      const fileId = `${currentSession.visaType}_${task.id}`;
-      const fileRecord = await idbGetFile(fileId);
-      
       if (fileRecord && fileRecord.dataUrl) {
         const ext = getFileExt(task.attachedMeta.name);
         const standardFileName = `${task.standardName || `Document_${idx+1}`}_${applicantNameClean}.${ext}`;
