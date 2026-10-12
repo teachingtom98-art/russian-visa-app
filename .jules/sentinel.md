@@ -1,0 +1,7 @@
+## 2025-02-14 - Fix DOM XSS via Local File State Import
+**Vulnerability:** The application was vulnerable to DOM-based Cross-Site Scripting (XSS) due to insufficient sanitization of imported JSON state backups. User-controlled fields from the JSON (like `task.title`, `task.hint`, `task.source`, `task.guidance`, `task.standardName`) were directly injected into HTML via `innerHTML`. Additionally, `task.sourceUrl` was susceptible to `javascript:` URI attacks. The `escapeHtml` function did not cast values to strings before applying `.replace()`, allowing malicious payloads to exploit number or array types.
+**Learning:** Even entirely client-side, local-first applications are vulnerable to XSS if they accept imported state (e.g., JSON restore files). Any data originating from outside the immediate DOM execution context, even if historically saved by the same user or ostensibly local, must be treated as untrusted and properly sanitized or escaped upon restoration and injection.
+**Prevention:**
+1. Always escape all imported JSON values before injecting them into `innerHTML`.
+2. Always validate and sanitize URLs (enforcing `http://` or `https://` schemas) before using them in `href` attributes to prevent `javascript:` execution.
+3. Ensure utility functions like `escapeHtml` are resilient to unexpected data types by explicitly casting inputs to strings (e.g., `String(val).replace(...)`).
