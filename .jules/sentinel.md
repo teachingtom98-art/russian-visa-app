@@ -1,0 +1,4 @@
+## 2024-05-18 - [HIGH] XSS Vulnerability via Local JSON State Import
+**Vulnerability:** Found a Cross-Site Scripting (XSS) vulnerability during the rendering of the task list (`renderTaskList`) in `app.js`. When a user loads a malicious JSON backup file, untrusted task attributes (e.g., `task.title`, `task.hint`, `task.guidance`, `task.sourceUrl`) were injected directly into `.innerHTML` without sanitization.
+**Learning:** Local-first applications often use file inputs (JSON/ZIP) for restoring state. Deserializing untrusted JSON directly to UI elements provides a vector for DOM-based XSS, even in a system with zero backend dependencies.
+**Prevention:** Sanitize all untrusted inputs prior to DOM insertion, such as escaping HTML entities (`escapeHtml`) for textual data and validating schemes (`sanitizeUrl`) for URLs, even if the data purportedly originated from the local client itself.
