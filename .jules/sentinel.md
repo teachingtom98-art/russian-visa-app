@@ -1,0 +1,6 @@
+## 2024-10-17 - Prevent XSS in JSON Imports via DOM Injection
+**Vulnerability:** A Cross-Site Scripting (XSS) vulnerability was found where user-supplied properties from imported JSON files (`task.title`, `task.hint`, `task.sourceUrl`, etc.) were directly injected into the DOM using `innerHTML` in the `renderTaskList` function without prior sanitization. This allowed execution of malicious scripts embedded in the JSON.
+**Learning:** Even local-first applications are vulnerable to XSS if untrusted imported data (e.g. JSON state backups) is rendered directly using `innerHTML`. The `app.js` file contained an `escapeHtml` function, but it was not consistently applied to all dynamically injected fields. URLs in `href` attributes are also an XSS vector via `javascript:` protocols.
+**Prevention:**
+1. Always wrap dynamically injected text fields (e.g. `title`, `hint`, `guidance`, `source`, `verifiedDate`) inside `innerHTML` templates with a robust HTML escaping function (like the existing `escapeHtml`).
+2. Validate and sanitize all dynamically constructed URLs (e.g., `sourceUrl`) using a custom `sanitizeUrl` function to ensure they only use safe protocols (`http:` or `https:`) before placing them in `href` attributes, blocking dangerous schemes like `javascript:` and `data:`.
