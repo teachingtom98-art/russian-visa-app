@@ -1,0 +1,4 @@
+## 2024-05-24 - [Fix DOM XSS vulnerability in DOM rendering]
+**Vulnerability:** DOM XSS vulnerability was identified due to user input not being sanitized via `escapeHtml` during DOM rendering in `app.js`. Untrusted data loaded from JSON state imports via `task.title`, `task.hint`, `task.sourceUrl`, and `task.guidance` could execute malicious scripts if not sanitized correctly before being added to `innerHTML`.
+**Learning:** Local-first applications that load complex data structures from imported JSON files (like restoring a session) are susceptible to DOM XSS if that data is directly injected into `innerHTML` without sanitization. `javascript:` URIs in href attributes are another common vector.
+**Prevention:** Always use `escapeHtml` or similar encoding when inserting arbitrary strings into the DOM via `innerHTML`. For URLs used in `href` or `src` attributes, enforce protocol validation (e.g., `http:` and `https:`) to prevent `javascript:` and `data:` URI attacks.
