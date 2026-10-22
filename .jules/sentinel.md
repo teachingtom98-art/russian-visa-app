@@ -1,0 +1,4 @@
+## 2024-10-22 - Prevent XSS in JSON State Import
+**Vulnerability:** The application was vulnerable to Cross-Site Scripting (XSS) due to unsanitized JSON data being imported and directly interpolated into the DOM using `innerHTML` during task checklist rendering. Malicious payloads in `task.title`, `task.hint`, `task.source`, and particularly `task.sourceUrl` (`javascript:` execution) could execute arbitrary code when an attacker's crafted backup file was restored.
+**Learning:** Even entirely local, frontend-only applications are susceptible to XSS if they accept file imports (like JSON state backups) and render that data without sanitization. Trusting local storage or user-provided files as "safe" is a critical oversight.
+**Prevention:** Always sanitize all dynamic data before DOM insertion, regardless of the source. Use `escapeHtml` for general text and enforce strict URL schemes (`http://`, `https://`) for `href` attributes to prevent `javascript:` execution.
