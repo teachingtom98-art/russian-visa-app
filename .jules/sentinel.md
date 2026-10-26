@@ -1,0 +1,6 @@
+## 2024-05-18 - [CRITICAL] Stored XSS via JSON Import
+**Vulnerability:** A Stored Cross-Site Scripting (XSS) vulnerability was found in the backup restore mechanism. Untrusted task properties (`title`, `hint`, `source`, `sourceUrl`, `verifiedDate`, `guidance`) from `application_backup_state.json` were rendered directly into the DOM via `li.innerHTML` during the execution of `renderTaskList()`. Because this state is directly imported by the user (via `handleFileRestore`), it bypasses regular form sanitization and allows malicious HTML and `javascript:` URIs to execute when the task list is rendered.
+**Learning:** Local-first architecture (e.g. IndexedDB, localStorage, JSON file import) often bypasses traditional backend security measures. Just because data is loaded locally doesn't mean it's trusted. The application must treat imported JSON files with the same skepticism as a remote API response. Furthermore, `innerHTML` string interpolation remains highly dangerous without proper escaping context.
+**Prevention:**
+1. All dynamic text content injected into `innerHTML` must be wrapped in `escapeHtml()`.
+2. All dynamic URLs injected into `href` or `src` attributes must be strictly validated. Introduced `sanitizeUrl()` to enforce only `http://` and `https://` schemas, mitigating `javascript:` protocol attacks.
