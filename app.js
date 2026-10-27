@@ -884,7 +884,7 @@ async function renderTaskList() {
         <details class="task-guidance-details">
           <summary class="task-guidance-summary">Requirements & preparation guidance</summary>
           <div class="task-guidance-text">
-            <p>${task.guidance}</p>
+            <p>${escapeHtml(task.guidance)}</p>
           </div>
         </details>
       `;
@@ -895,13 +895,13 @@ async function renderTaskList() {
         <div class="task-main">
           <div class="task-title-wrap">
             <span class="task-title" onclick="toggleTaskStatus(${index})">
-              ${task.title}
+              ${escapeHtml(task.title)}
             </span>
           </div>
-          <p class="task-hint">${task.hint}</p>
+          <p class="task-hint">${escapeHtml(task.hint)}</p>
           <div class="task-meta-tags">
-            ${task.source ? `<a href="${task.sourceUrl || '#'}" target="_blank" rel="noopener noreferrer" class="source-tag">Source: ${task.source} &nearr;</a>` : ''}
-            ${task.verifiedDate ? `<span class="verified-tag">&bull; Verified: ${task.verifiedDate}</span>` : ''}
+            ${task.source ? `<a href="${sanitizeUrl(task.sourceUrl) || '#'}" target="_blank" rel="noopener noreferrer" class="source-tag">Source: ${escapeHtml(task.source)} &nearr;</a>` : ''}
+            ${task.verifiedDate ? `<span class="verified-tag">&bull; Verified: ${escapeHtml(task.verifiedDate)}</span>` : ''}
           </div>
         </div>
 
@@ -1554,6 +1554,16 @@ function formatBytes(bytes) {
   const sizes = ['Bytes', 'KB', 'MB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+}
+
+function sanitizeUrl(url) {
+  if (!url) return '';
+  const trimmed = url.trim();
+  const lower = trimmed.toLowerCase();
+  if (lower.startsWith('http://') || lower.startsWith('https://')) {
+    return trimmed;
+  }
+  return 'about:blank';
 }
 
 function escapeHtml(str) {
