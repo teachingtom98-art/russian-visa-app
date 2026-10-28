@@ -1,0 +1,4 @@
+## 2024-10-28 - XSS Risk via JSON Import
+**Vulnerability:** XSS vulnerability through the importation of user-supplied JSON files (via `handleFileRestore`). Untrusted data within the JSON (such as task title, hint, source, and guidance) was dynamically inserted into the DOM without HTML escaping or URL sanitization.
+**Learning:** In a local-first application architecture, local save files (JSON metadata and IndexedDB blobs) can be manipulated externally and then loaded by the browser. Although there's no server backend, XSS remains a high risk because the app parses and inherently trusts this imported local state data, rendering it directly.
+**Prevention:** Sanitize ALL imported JSON state fields using `escapeHtml` (for text content) and a strict scheme whitelist (e.g. `http:`, `https:`) using `sanitizeUrl` (for hrefs) before appending them to the DOM.
