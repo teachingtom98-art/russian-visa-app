@@ -1,0 +1,4 @@
+## 2024-05-18 - Fix DOM-based XSS via imported JSON state
+**Vulnerability:** DOM-based XSS was possible via importing untrusted `.json` session files (like backups). Values were passed to `innerHTML` without comprehensive sanitization (some properties weren't escaped at all, and some like URLs allowed `javascript:` schemes). In addition, `escapeHtml` would crash if a non-string (like a boolean) was parsed from the JSON and passed into it.
+**Learning:** Even entirely local-first, serverless SPAs can be vulnerable to XSS if they allow users to import untrusted state (like JSON backups) which is then reflected into the DOM via `innerHTML`.
+**Prevention:** Cast all inputs to string in `escapeHtml` (e.g. `String(str || '')`), use it on *all* user-controlled data being injected into the DOM, and validate all URL schemes enforcing explicit allowlists (e.g. `http://` or `https://`).
