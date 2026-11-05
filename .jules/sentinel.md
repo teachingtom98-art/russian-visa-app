@@ -1,0 +1,4 @@
+## 2024-11-05 - Fix Stored XSS via JSON Import
+**Vulnerability:** A stored XSS vulnerability existed where a maliciously crafted JSON file could be uploaded and restore arbitrary JS into DOM elements (via task titles, hints, sources, guidance, etc) which were assigned to `.innerHTML` without escaping. Further, `.sourceUrl` wasn't sanitized, allowing `javascript:` scheme attacks.
+**Learning:** Even though the app has no backend and data resides locally, accepting complex untrusted inputs (e.g., JSON imports) and injecting them into the DOM without sanitization can lead to DOM-based/Stored XSS locally when interacting with shared/malicious files. Data used only for exporting txt is correctly unescaped.
+**Prevention:** Always wrap untrusted inputs with strict entity encoding (`escapeHtml`) before inserting into `.innerHTML`, and ensure href attributes strictly allowlist schemes (via `sanitizeUrl`) rather than relying on assumed local/trusted flows.
