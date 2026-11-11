@@ -1,0 +1,4 @@
+## 2024-11-11 - [DOM Injection via Local JSON Import]
+**Vulnerability:** The application was vulnerable to Cross-Site Scripting (XSS) due to untrusted JSON data being unsafely injected into the DOM via `innerHTML` during task rendering. A malicious `.json` backup file could execute arbitrary scripts.
+**Learning:** Even local-first applications without a backend must meticulously sanitize data parsed from locally imported files. The fact that the data originated from the local file system does not inherently make it trustworthy, especially when importing generic configurations or states.
+**Prevention:** All untrusted data, including from local file imports, must be sanitized using functions like `escapeHtml` (with correct null/non-string handling) and `sanitizeUrl` (enforcing `http`/`https` schemes) prior to DOM insertion.
